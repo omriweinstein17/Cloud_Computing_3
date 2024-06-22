@@ -7,7 +7,7 @@ dotenv.config();
 const PORT = 8000;
 
 // Connection URL
-const mongoURI = "mongodb://mongo:27017/BooksDB"; // Change this to your MongoDB URI
+const mongoURI = process.env.MONGO_URL || "mongodb://mongo:27017/BooksDB"; // Change this to your MongoDB URI
 
 mongoose
   .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
