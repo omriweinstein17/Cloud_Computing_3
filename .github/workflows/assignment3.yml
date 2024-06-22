@@ -35,9 +35,9 @@ jobs:
       - name: create a docker network
         run: docker network create books-net
       - name: run mongodb in container
-        run: docker run -d -p 27017:27017 --network books-net mongo
+        run: docker run -d -p 27017:27017 --network books-net --name mongodb mongo
       - name: run image in container
-        run: docker run -e MONGO_URL="mongodb://mongo:27017/BooksDB" --network books-net -p5001:8000 books &
+        run: docker run -e MONGO_URL="mongodb://mongodb:27017/BooksDB" --network books-net -p5001:8000 books &
       - name: Check container is running
         run: docker ps
       #     2. set up python and pytest environment
