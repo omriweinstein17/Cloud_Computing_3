@@ -1,1 +1,5 @@
-?publishedDate=2016-06-13
+?title=The Best of Isaac Asimov
+?authors=Anatoly Shcharansky
+?genre=Science Fiction
+?ISBN=9780553293364
+?IBN=9780553293364

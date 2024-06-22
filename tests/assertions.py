@@ -1,7 +1,5 @@
-import string
 import sys
 import requests
-
 import connectionController
 books_id_array = []
 

@@ -1,7 +1,6 @@
 from books import books_array
 import connectionController
 from assertions import *
-import symtable
 
 # Test 1
 def test_post_books():  
