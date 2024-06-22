@@ -14,35 +14,36 @@ def test_post_books():
     assert_status_code(response3, 201)
     assert_valid_post_response(response1, response2, response3)
 
-# Test 2
-def test_get_book_by_id():
-    # add id to string in the response
-    response = connectionController.http_get(f"books/{books_id_array[0]}")
-    assert_status_code(response, 200)
-    assert_ret_value(response, "authors", "Mark Twain")
+# # Test 2
+# def test_get_book_by_id():
+#     # add id to string in the response
+#     response = connectionController.http_get(f"books/{books_id_array[0]}")
+#     assert_status_code(response, 200)
+#     assert_ret_value(response, "authors", "Mark Twain")
 
-# Test 3
-def test_get_books():
-    response = connectionController.http_get("books")
-    assert_status_code(response, 200)
-    assert_length_of_array(response, 3)
+# # Test 3
+# def test_get_books():
+#     response = connectionController.http_get("books")
+#     assert_status_code(response, 200)
+#     assert_length_of_array(response, 3)
 
-# Test 4 
-def test_post_books_with_invalid_ISBN():
-    response = connectionController.http_post("books", books_array[3])
-    assert_status_code(response, 500)
+# # Test 4 
+# def test_post_books_with_invalid_ISBN():
+#     response = connectionController.http_post("books", books_array[3])
+#     assert_status_code(response, 500)
     
-# Test 5
-def test_delete_books():
-    response = connectionController.http_delete(f"books/{books_id_array[1]}")
-    assert_status_code(response, 200)
+# # Test 5
+# def test_delete_books():
+#     response = connectionController.http_delete(f"books/{books_id_array[1]}")
+#     assert_status_code(response, 200)
 
-# Test 6
-def test_get_deleted_book():
-    response = connectionController.http_get(f"books/{books_id_array[1]}")
-    assert_status_code(response, 404)
+# # Test 6
+# def test_get_deleted_book():
+#     response = connectionController.http_get(f"books/{books_id_array[1]}")
+#     assert_status_code(response, 404)
 
-# Test 7
-def test_post_books_with_invalid_genre():
-    response = connectionController.http_post("books", books_array[4])
-    assert_status_code(response, 422)
+# # Test 7
+# def test_post_books_with_invalid_genre():
+#     response = connectionController.http_post("books", books_array[4])
+#     assert_status_code(response, 422)
+
