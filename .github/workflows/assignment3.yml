@@ -33,7 +33,7 @@ jobs:
       - name: check books image is loaded
         run: docker image ls
       - name: run mongodb in container
-        run: docker run -d -p 27017:27017 --name mongodb mongo:lastest
+        run: docker run -d -p 27017:27017 --name mongodb mongo
       - name: run image in container
         run: docker run -p5001:8000 books &
       - name: Check container is running
