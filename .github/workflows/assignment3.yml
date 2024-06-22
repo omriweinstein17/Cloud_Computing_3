@@ -13,8 +13,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./booksServer
-          file: ./Dockerfile
-          tags: books:latest, ${{ secrets.USERNAME }}/wordsvr-v2:latest
+          #   file: ./Dockerfile
+          tags: books:latest, ${{ secrets.USERNAME }}/books:latest
           outputs: type=docker,dest=/tmp/image.tar
       - name: Upload artifact
         uses: actions/upload-artifact@v3
