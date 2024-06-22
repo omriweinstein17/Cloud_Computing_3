@@ -4,10 +4,10 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const PORT = process.env.PORT || 80;
+const PORT = 8000;
 
 // Connection URL
-const mongoURI = process.env.MONGO_URL; // Change this to your MongoDB URI
+const mongoURI = "mongodb://mongo:27017/BooksDB"; // Change this to your MongoDB URI
 
 mongoose
   .connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
