@@ -76,13 +76,13 @@ jobs:
           cd tests
           pytest -v assn3_tests.py > assn3_test_results.txt
         continue-on-error: true
-      # - name: Check test results and log
-      #   run: |
-      #     if [ $? -eq 0 ]; then
-      #       echo -e "tests succeeded\n" >> log.txt
-      #     else
-      #       echo -e "tests failed\n" >> log.txt
-      #     fi
+      - name: Check test results and log
+        run: |
+          if [ $? -eq 0 ]; then
+            echo -e "tests succeeded\n" >> log.txt
+          else
+            echo -e "tests failed\n" >> log.txt
+          fi
       - name: upload test results
         uses: actions/upload-artifact@v3
         with:
