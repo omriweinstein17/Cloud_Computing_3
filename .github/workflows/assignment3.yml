@@ -118,6 +118,7 @@ jobs:
         with:
           name: log
           path: /tmp/log.txt
+          overwrite: true
       - name: Shut down Docker Compose
         run: docker-compose down
 
