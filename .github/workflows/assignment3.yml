@@ -20,6 +20,7 @@ jobs:
           tags: books:latest, ${{ secrets.USERNAME }}/books:latest
           outputs: type=docker,dest=/tmp/image.tar
       - name: Check build status and log result
+        if: always()
         run: |
           if [ -f /tmp/image.tar ]; then
             echo -e "image successfully built" >> /tmp/log.txt
