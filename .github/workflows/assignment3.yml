@@ -29,12 +29,12 @@ jobs:
       - name: Print log file contents
         run: cat log.txt
       - name: Upload log file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: log
           path: log.txt
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: books
           path: /tmp/image.tar
@@ -47,31 +47,29 @@ jobs:
         uses: actions/checkout@v4
       #    1. download image and run it in a container
       - name: Download books artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: books
           path: /tmp
+      - name: Load Docker images from previous workflows
+        run: docker load --input /tmp/image.tar
       - name: Download log artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: log
           path: /tmp
-      - name: Load Docker images from previous workflows
-        run: docker load --input /tmp/image.tar
       - name: Print log file contents
         run: cat /tmp/log.txt
       - name: check books image is loaded
         run: docker image ls
-      # - name: Set up Docker Compose
-      #   run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Run Docker Compose
         run: docker-compose up -d &
       - name: Wait for services to be healthy
         run: |
           echo "Waiting for services to be healthy..."
-          sleep 30  # Adjust the sleep time as needed
+          sleep 5  # Adjust the sleep time as needed
       - name: Check container is running
-        run: docker container ls
+        run: docker ps
       - name: Check container is running and log
         run: |
           if docker ps --filter "name=books-service" --filter "status=running" | grep books-container; then
@@ -79,6 +77,8 @@ jobs:
           else
             echo -e "Container failed to run\n" >> /tmp/log.txt
           fi
+      - name: Print log file contents
+        run: cat /tmp/log.txt
       #     2. set up python and pytest environment
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -101,8 +101,10 @@ jobs:
           else
             echo -e "tests failed\n" >> /tmp/log.txt
           fi
+      - name: Print log file contents
+        run: cat /tmp/log.txt
       - name: upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: assn3_test_results
           path: tests/assn3_test_results.txt
@@ -110,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: log
-          path: log.txt
+          path: /tmp/log.txt
       # - name: Shut down Docker Compose
       #   run: docker-compose down
 
