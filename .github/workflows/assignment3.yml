@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: log of start workflow time
-        run: echo -e "$(date -Iminutes)\nOmri Weinstein, Gal Trodel" > ./log.txt
+        run: echo -e "$(date -Iminutes)\nOmri Weinstein, Gal Trodel" > /tmp/log.txt
       - name: Print log file contents
         run: cat log.txt
       - name: Checkout
@@ -22,17 +22,17 @@ jobs:
       - name: Check build status and log result
         run: |
           if [ -f /tmp/image.tar ]; then
-            echo -e "image successfully built" >> ./log.txt
+            echo -e "image successfully built" >> /tmp/log.txt
           else
-            echo -e "image not able to be built" >> ./log.txt
+            echo -e "image not able to be built" >> /tmp/log.txt
           fi
       - name: Print log file contents
-        run: cat log.txt
+        run: cat ./log.txt
       - name: Upload log file
         uses: actions/upload-artifact@v4
         with:
           name: log
-          path: log.txt
+          path: /tmp/log.txt
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -78,9 +78,9 @@ jobs:
           books_running=$(docker ps --filter "ancestor=books:latest" --filter "status=running" -q)
           mongo_running=$(docker ps --filter "ancestor=mongo:latest" --filter "status=running" -q)
           if [ -n "$books_running" ] && [ -n "$mongo_running" ]; then
-            echo -e "Container up and running\n" >> /tmp/log.txt
+            echo -e "Container up and running" >> /tmp/log.txt
           else
-            echo -e "Container failed to run\n" >> /tmp/log.txt
+            echo -e "Container failed to run" >> /tmp/log.txt
           fi
       - name: Print log file contents
         run: cat /tmp/log.txt
@@ -102,9 +102,9 @@ jobs:
       - name: Check test results and log
         run: |
           if [ $? -eq 0 ]; then
-            echo -e "tests succeeded\n" >> /tmp/log.txt
+            echo -e "tests succeeded" >> /tmp/log.txt
           else
-            echo -e "tests failed\n" >> /tmp/log.txt
+            echo -e "tests failed" >> /tmp/log.txt
           fi
       - name: Print log file contents
         run: cat /tmp/log.txt
@@ -114,12 +114,12 @@ jobs:
           name: assn3_test_results
           path: tests/assn3_test_results.txt
       - name: Upload log file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: log
           path: /tmp/log.txt
-      # - name: Shut down Docker Compose
-      #   run: docker-compose down
+      - name: Shut down Docker Compose
+        run: docker-compose down
 
   # query:
   #   needs: build
@@ -129,7 +129,7 @@ jobs:
   #       uses: actions/checkout@v4
   #     #    1. download image and run it in a container
   #     - name: Download artifact
-  #       uses: actions/download-artifact@v3 # downloads all artifacts
+  #       uses: actions/download-artifact@v4 # downloads all artifacts
   #     - name: Load Docker images from previous workflows
   #       run: docker load --input books/image.tar
   #     - name: check books image is loaded
@@ -156,7 +156,7 @@ jobs:
   #         cd tests
   #         python run_queries.py
   #     - name: upload response results
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
   #         name: response
   #         path: tests/response.txt
