@@ -62,10 +62,14 @@ jobs:
         run: cat /tmp/log.txt
       - name: check books image is loaded
         run: docker image ls
-      - name: Set up Docker Compose
-        run: sudo apt-get update && sudo apt-get install -y docker-compose
+      # - name: Set up Docker Compose
+      #   run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Run Docker Compose
         run: docker-compose up -d &
+      - name: Wait for services to be healthy
+        run: |
+          echo "Waiting for services to be healthy..."
+          sleep 30  # Adjust the sleep time as needed
       - name: Check container is running
         run: docker container ls
       - name: Check container is running and log
