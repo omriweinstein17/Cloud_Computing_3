@@ -19,14 +19,14 @@ jobs:
           context: ./booksServer
           tags: books:latest, ${{ secrets.USERNAME }}/books:latest
           outputs: type=docker,dest=/tmp/image.tar
-      - name: Check build status and log result
-        if: always()
+      - name: Handle build failure
+        if: failure()
         run: |
-          if [ -f /tmp/image.tar ]; then
-            echo -e "image successfully built" >> /tmp/log.txt
-          else
-            echo -e "image not able to be built" >> /tmp/log.txt
-          fi
+          echo -e "image not able to be built" >> /tmp/log.txt
+      - name: Handle build success
+        if: success()
+        run: |
+          echo -e "iimage successfully built" >> /tmp/log.txt
       - name: Print log file contents
         run: cat /tmp/log.txt
       - name: Upload log file
