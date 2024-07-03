@@ -6,7 +6,7 @@ from assertions import *
 def test_post_books():  
     # POST /books request for book1
     response1 = connectionController.http_post("books", books_array[0])
-    assert_status_code(response1, [200])
+    assert_status_code(response1, [20])
     response2 = connectionController.http_post("books", books_array[1])
     assert_status_code(response2, [201])
     response3 = connectionController.http_post("books", books_array[2])
