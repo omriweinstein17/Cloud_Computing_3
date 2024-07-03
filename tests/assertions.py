@@ -3,8 +3,8 @@ import requests
 import connectionController
 books_id_array = []
 
-def assert_status_code(response: requests.Response, status_code: int):
-    assert response.status_code == status_code
+def assert_status_code(response: requests.Response, status_code: [int]):
+    assert response.status_code in status_code
 
 
 def assert_ret_value(response: requests.Response, field: str, returned_value: any):
@@ -37,8 +37,24 @@ def assert_not_existed_meal(meal_identifier: any) -> None:
     assert_status_code(response, error_code=404)
     assert_ret_value(response, returned_value=-5)
 
-
-def assert_length_of_array(response: requests.Response, length: int):
+def assert_length_and_types_of_array(response: requests.Response, length: int):
     assert len(response.json()) == length
+    for book in response.json():
+        assert is_book(book) == True
 
 
+def is_book(book_dict):
+    required_keys = {
+        "id": str,
+        "title": str,
+        "genre": str,
+        "authors": str,
+        "ISBN": str,
+        "publishedDate": str,
+        "publisher": str
+    }
+    
+    for key, value_type in required_keys.items():
+        if key not in book_dict or not isinstance(book_dict[key], value_type):
+            return False
+    return True

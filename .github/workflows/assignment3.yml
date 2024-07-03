@@ -39,29 +39,33 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       #    1. download image and run it in a container
       - name: Download artifact
         uses: actions/download-artifact@v3 # downloads all artifacts
       - name: Load Docker images from previous workflows
         run: docker load --input books/image.tar
-      - name: check books image is loaded
-        run: docker image ls
-      - name: create a docker network
-        run: docker network create books-net
-      - name: run mongodb in container
-        run: docker run -d -p 27017:27017 --network books-net --name mongodb mongo
-      - name: run image in container
-        run: docker run -e MONGO_URL="mongodb://mongodb:27017/BooksDB" --network books-net -p5001:8000 books &
+      # - name: check books image is loaded
+      #   run: docker image ls
+      - name: Set up Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+      - name: Run Docker Compose
+        run: docker-compose up -d &
+      # - name: create a docker network
+      #   run: docker network create books-net
+      # - name: run mongodb in container
+      #   run: docker run -d -p 27017:27017 --network books-net --name mongodb mongo
+      # - name: run image in container
+      #   run: docker run -e MONGO_URL="mongodb://mongodb:27017/BooksDB" --network books-net -p5001:8000 books &
       - name: Check container is running
         run: |
-          if docker ps --filter "name=books-container" --filter "status=running" | grep books-container; then
+          if docker ps --filter "name=books-service" --filter "status=running" | grep books-container; then
             echo -e "Container up and running\n" >> log.txt
           else
             echo -e "Container failed to run\n" >> log.txt
           fi
       #     2. set up python and pytest environment
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
       - name: Install dependencies
@@ -93,11 +97,15 @@ jobs:
         with:
           name: log
           path: log.txt
+      - name: Shut down Docker Compose
+        run: docker-compose down
 
   query:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       #    1. download image and run it in a container
       - name: Download artifact
         uses: actions/download-artifact@v3 # downloads all artifacts
@@ -105,15 +113,17 @@ jobs:
         run: docker load --input books/image.tar
       - name: check books image is loaded
         run: docker image ls
-      - name: create a docker network
-        run: docker network create books-net
-      - name: run mongodb in container
-        run: docker run -d -p 27017:27017 --network books-net --name mongodb mongo
-      - name: run image in container
-        run: docker run -e MONGO_URL="mongodb://mongodb:27017/BooksDB" --network books-net -p5001:8000 books &
+      - name: Set up Docker Compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+      - name: Run Docker Compose
+        run: docker-compose up -d &
+      # - name: create a docker network
+      #   run: docker network create books-net
+      # - name: run mongodb in container
+      #   run: docker run -d -p 27017:27017 --network books-net --name mongodb mongo
+      # - name: run image in container
+      #   run: docker run -e MONGO_URL="mongodb://mongodb:27017/BooksDB" --network books-net -p5001:8000 books &
       #     2. set up python and pytest environment
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
       - name: Install dependencies
