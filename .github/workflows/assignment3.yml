@@ -42,12 +42,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       #    1. download image and run it in a container
-      - name: Download artifact
-        uses: actions/download-artifact@v3 # downloads all artifacts
+      - name: Download books artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: books
+          path: /tmp
       - name: Load Docker images from previous workflows
         run: docker load --input books/image.tar
-      # - name: check books image is loaded
-      #   run: docker image ls
+      - name: Download log artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: log
+          path: /tmp
+      - name: Print log file contents
+        run: cat /tmp/log.txt
+      - name: check books image is loaded
+        run: docker image ls
       - name: Set up Docker Compose
         run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Run Docker Compose
@@ -59,6 +69,8 @@ jobs:
       # - name: run image in container
       #   run: docker run -e MONGO_URL="mongodb://mongodb:27017/BooksDB" --network books-net -p5001:8000 books &
       - name: Check container is running
+        run: docker container ls
+      - name: Check container is running and log
         run: |
           if docker ps --filter "name=books-service" --filter "status=running" | grep books-container; then
             echo -e "Container up and running\n" >> log.txt
@@ -97,8 +109,8 @@ jobs:
         with:
           name: log
           path: log.txt
-      - name: Shut down Docker Compose
-        run: docker-compose down
+      # - name: Shut down Docker Compose
+      #   run: docker-compose down
 
   query:
     needs: build
