@@ -6,7 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: log of start workflow time
-        run: echo -e "$(date -Iminutes)\nOmri Weinstein, Gal Trodel\n" >> log.txt
+        run: echo -e "$(date -Iminutes)\nOmri Weinstein, Gal Trodel\n" > log.txt
+      - name: Print log file contents
+        run: cat log.txt
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
@@ -69,9 +71,9 @@ jobs:
       - name: Check container is running and log
         run: |
           if docker ps --filter "name=books-service" --filter "status=running" | grep books-container; then
-            echo -e "Container up and running\n" >> log.txt
+            echo -e "Container up and running\n" >> /tmp/log.txt
           else
-            echo -e "Container failed to run\n" >> log.txt
+            echo -e "Container failed to run\n" >> /tmp/log.txt
           fi
       #     2. set up python and pytest environment
       - name: Set up Python
@@ -91,9 +93,9 @@ jobs:
       - name: Check test results and log
         run: |
           if [ $? -eq 0 ]; then
-            echo -e "tests succeeded\n" >> log.txt
+            echo -e "tests succeeded\n" >> /tmp/log.txt
           else
-            echo -e "tests failed\n" >> log.txt
+            echo -e "tests failed\n" >> /tmp/log.txt
           fi
       - name: upload test results
         uses: actions/upload-artifact@v3
