@@ -70,7 +70,7 @@ jobs:
           sleep 5  # Adjust the sleep time as needed
       - name: Check container is running
         run: |
-          docker ps
+          docker container ls
           docker ps --filter "ancestor=books:latest" --filter "status=running" -q
           docker ps --filter "ancestor=mongo:latest" --filter "status=running" -q
       - name: Check container is running and log
@@ -122,42 +122,45 @@ jobs:
       - name: Shut down Docker Compose
         run: docker-compose down
 
-  # query:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     #    1. download image and run it in a container
-  #     - name: Download artifact
-  #       uses: actions/download-artifact@v4 # downloads all artifacts
-  #     - name: Load Docker images from previous workflows
-  #       run: docker load --input books/image.tar
-  #     - name: check books image is loaded
-  #       run: docker image ls
-  #     - name: Set up Docker Compose
-  #       run: sudo apt-get update && sudo apt-get install -y docker-compose
-  #     - name: Run Docker Compose
-  #       run: docker-compose up -d &
-  #     # - name: create a docker network
-  #     #   run: docker network create books-net
-  #     # - name: run mongodb in container
-  #     #   run: docker run -d -p 27017:27017 --network books-net --name mongodb mongo
-  #     # - name: run image in container
-  #     #   run: docker run -e MONGO_URL="mongodb://mongodb:27017/BooksDB" --network books-net -p5001:8000 books &
-  #     #     2. set up python and pytest environment
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v4
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install requests
-  #     - name: Run request with python # additionally use ruff or other lint checkers
-  #       run: |
-  #         cd tests
-  #         python run_queries.py
-  #     - name: upload response results
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: response
-  #         path: tests/response.txt
+  query:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      #    1. download image and run it in a container
+      - name: Download books artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: books
+          path: /tmp
+      - name: Load Docker images from previous workflows
+        run: docker load --input /tmp/image.tar
+      - name: check books image is loaded
+        run: docker image ls
+      - name: Run Docker Compose
+        run: docker-compose up -d &
+      - name: Wait for services to be healthy
+        run: |
+          echo "Waiting for services to be healthy..."
+          sleep 5  # Adjust the sleep time as needed
+      - name: Check container is running
+        run: |
+          docker container ls
+          docker ps --filter "ancestor=books:latest" --filter "status=running" -q
+          docker ps --filter "ancestor=mongo:latest" --filter "status=running" -q
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+      - name: Run request with python # additionally use ruff or other lint checkers
+        run: |
+          cd tests
+          python run_queries.py
+      - name: upload response results
+        uses: actions/upload-artifact@v4
+        with:
+          name: response
+          path: tests/response.txt
