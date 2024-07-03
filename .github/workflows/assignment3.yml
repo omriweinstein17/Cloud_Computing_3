@@ -68,7 +68,7 @@ jobs:
       - name: Wait for services to be healthy
         run: |
           echo "Waiting for services to be healthy..."
-          sleep 5  # Adjust the sleep time as needed
+          sleep 10  # Adjust the sleep time as needed
       - name: Check container is running
         run: |
           docker container ls
@@ -127,7 +127,7 @@ jobs:
         run: docker-compose down
 
   query:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -147,7 +147,7 @@ jobs:
       - name: Wait for services to be healthy
         run: |
           echo "Waiting for services to be healthy..."
-          sleep 5  # Adjust the sleep time as needed
+          sleep 10  # Adjust the sleep time as needed
       - name: Check container is running
         run: |
           docker container ls
