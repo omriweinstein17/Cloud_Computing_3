@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: log of start workflow time
-        run: echo -e "$(date -Iminutes)\nOmri Weinstein, Gal Trodel\n" > log.txt
+        run: echo -e "$(date -Iminutes)\nOmri Weinstein, Gal Trodel\n" >> log.txt
       - name: Checkout
         uses: actions/checkout@v4
       - name: Set up Docker Buildx
@@ -24,6 +24,8 @@ jobs:
           else
             echo -e "image not able to be built\n" >> log.txt
           fi
+      - name: Print log file contents
+        run: cat log.txt
       - name: Upload log file
         uses: actions/upload-artifact@v3
         with:
@@ -62,12 +64,6 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Run Docker Compose
         run: docker-compose up -d &
-      # - name: create a docker network
-      #   run: docker network create books-net
-      # - name: run mongodb in container
-      #   run: docker run -d -p 27017:27017 --network books-net --name mongodb mongo
-      # - name: run image in container
-      #   run: docker run -e MONGO_URL="mongodb://mongodb:27017/BooksDB" --network books-net -p5001:8000 books &
       - name: Check container is running
         run: docker container ls
       - name: Check container is running and log
