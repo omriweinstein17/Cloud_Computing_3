@@ -1,5 +1,5 @@
 services:
-  books-service2:
+  books-service:
     image: books:latest
     build:
       context: ./booksServer
