@@ -1,6 +1,10 @@
 services:
+<<<<<<< HEAD
   books-service:
   f
+=======
+  books-service2:
+>>>>>>> baf01f1f3e68d65bc7048e5711bbc5d53b3d4117
     image: books:latest
     build:
       context: ./booksServer
