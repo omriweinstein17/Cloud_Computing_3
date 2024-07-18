@@ -17,7 +17,7 @@ def test_post_books():
 def test_get_book_by_id():
     # add id to string in the response
     response = connectionController.http_get(f"books/{books_id_array[0]}")
-    assert_status_code(response, [900])
+    assert_status_code(response, [200])
     assert_ret_value(response, "authors", "Mark Twain")
 
 # Test 3
