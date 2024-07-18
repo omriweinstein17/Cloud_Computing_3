@@ -47,7 +47,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      #    1. download image and run it in a container
+      # 1. Download image and run it in a container
       - name: Download books artifact
         uses: actions/download-artifact@v4
         with:
@@ -62,56 +62,54 @@ jobs:
           path: /tmp
       - name: Print log file contents
         run: cat /tmp/log.txt
-      - name: check books image is loaded
+      - name: Check books image is loaded
         run: docker image ls
       - name: Run Docker Compose
-        run: docker-compose up -d &
+        run: docker-compose up -d
       - name: Wait for services to be healthy
         run: |
           echo "Waiting for services to be healthy..."
           sleep 10  # Adjust the sleep time as needed
-      - name: Check container is running
-        run: |
-          docker container ls
-          docker ps --filter "ancestor=books:latest" --filter "status=running" -q
-          docker ps --filter "ancestor=mongo:latest" --filter "status=running" -q
-      - name: Check container is running and log
+      - name: Check container is running and set output
+        id: check_containers
         run: |
           books_running=$(docker ps --filter "ancestor=books:latest" --filter "status=running" -q)
-          mongo_running=$(docker ps --filter "ancestor=mongo:latest" --filter "status=running" -q)
+          mongo_running=$(docker ps --filter "ancestor=mongo:latest" -q)
           if [ -n "$books_running" ] && [ -n "$mongo_running" ]; then
+            echo "Containers are running."
+            echo "::set-output name=containers_running::true"
             echo -e "Container up and running" >> /tmp/log.txt
           else
+            echo "Containers failed to run."
+            echo "::set-output name=containers_running::false"
             echo -e "Container failed to run" >> /tmp/log.txt
-          fi
       - name: Print log file contents
         run: cat /tmp/log.txt
-      #     2. set up python and pytest environment
+      # 2. Set up Python and pytest environment
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.12.2
       - name: Install dependencies
+        if: steps.check_containers.outputs.containers_running == 'true'
         run: |
           python -m pip install --upgrade pip
-          pip install pytest # not using yet lint checker like ruff
-          pip install requests
+          pip install pytest requests
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      #      3. run pytest tests and check results
-      - name: Test with pytest # additionally use ruff or other lint checkers
+      # 3. Run pytest tests and check results
+      - name: Test with pytest
+        if: steps.check_containers.outputs.containers_running == 'true'
         run: |
           cd tests
           pytest -v assn3_tests.py > assn3_test_results.txt
       - name: Handle tests failure
-        if: failure()
-        run: |
-          echo -e "tests failed" >> /tmp/log.txt
-      - name: Handle build success
-        if: success()
-        run: |
-          echo -e "tests succeeded" >> /tmp/log.txt
-      - name: upload test results
-        if: always()
+        if: failure() && steps.check_containers.outputs.containers_running == 'true'
+        run: echo -e "tests failed" >> /tmp/log.txt
+      - name: Handle tests success
+        if: success() && steps.check_containers.outputs.containers_running == 'true'
+        run: echo -e "tests succeeded" >> /tmp/log.txt
+      - name: Upload test results
+        if: steps.check_containers.outputs.containers_running == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: assn3_test_results
