@@ -1,10 +1,5 @@
-?publishedDate=2016-06-13
-?genre=Fiction
-?author=Mark%20Twain
-?ISBN=9780520343641
-?title=The%20Adventures%20of%20Tom%20Sawyer
-?genre=Science%20Fiction
-?title=Second%20Foundation
-?ISBN=9780385050784
-?ISBN=0000000000000   
-?invalidQueryParam=abc
+?title=The Best of Isaac Asimov
+?authors=Anatoly Shcharansky
+?genre=Science Fiction
+?ISBN=9780553293364
+?IBN=9780553293364
