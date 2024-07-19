@@ -46,7 +46,11 @@ def save_responses(file_path, queries, responses):
     with open(file_path, 'w') as file:
         for i in range(len(responses)):
             file.write(f"query: {queries[i]}\n")
-            file.write(f"response: {json.dumps(json.loads(responses[i]))}" + "\n")
+            try:
+                response_json = json.loads(responses[i])
+                file.write(f"response: {json.dumps(response_json)}\n")
+            except json.JSONDecodeError:
+                file.write(f"response: {responses[i]}\n")
 
 # Main function to read queries, make requests, and save responses
 def main():
