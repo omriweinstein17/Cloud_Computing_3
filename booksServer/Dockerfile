@@ -1,6 +1,6 @@
 # Use the official Node.js 16 as a parent image
 FROM node:18-alpine3.18
-כדגכדג
+
 # Set the working directory
 WORKDIR /usr/src/app
 
