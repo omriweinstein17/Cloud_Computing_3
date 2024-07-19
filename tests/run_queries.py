@@ -49,7 +49,8 @@ def save_responses(file_path, queries, responses):
             try:
                 response_json = json.loads(responses[i])
                 formatted_response = json.dumps(response_json, indent=4)
-                file.write(f"response: {json.dumps(formatted_response)}\n")
+                file.write("response:\n")
+                file.write(formatted_response + "\n")
             except json.JSONDecodeError:
                 file.write(f"response: {responses[i]}\n")
 
