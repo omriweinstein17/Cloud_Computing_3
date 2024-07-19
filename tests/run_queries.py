@@ -42,11 +42,11 @@ def make_requests(queries):
     return responses
 
 # Function to save responses to a file
-def save_responses(file_path, responses):
+def save_responses(file_path, queries, responses):
     with open(file_path, 'w') as file:
-        for i,response in enumerate(responses):
-            file.write(f"query: qs-{i}" + "\n")
-            file.write(f"response: {response}" + "\n")
+        for i in range(len(responses)):
+            file.write(f"query: {queries[i]}\n")
+            file.write(f"response: {responses[i].json()}" + "\n")
 
 # Main function to read queries, make requests, and save responses
 def main():
@@ -55,7 +55,7 @@ def main():
     responses_file = 'response.txt'
     queries = read_queries(queries_file)
     responses = make_requests(queries)
-    save_responses(responses_file, responses)
+    save_responses(responses_file, queries, responses)
 
 if __name__ == "__main__":
     main()
