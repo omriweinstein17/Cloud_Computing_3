@@ -29,9 +29,15 @@ router.get("/", async (req, res) => {
   try {
     let fields = req.query;
     console.log(fields);
-    Object.entries(fields).forEach(([key, value]) => {
-      if (!bookFields.includes(key)) throw new Error(`invalid Fields`);
-    });
+
+    // Check for invalid fields
+    const invalidFields = Object.keys(fields).filter(
+      (key) => !bookFields.includes(key)
+    );
+    if (invalidFields.length > 0) {
+      return res.status(200).json([]);
+    }
+
     const books = [];
     if (fields) {
       const library = await Book.find();
@@ -46,15 +52,15 @@ router.get("/", async (req, res) => {
       });
       return res.status(200).json(books);
     } else {
+      const library = await Book.find();
       return res.status(200).json(library);
     }
   } catch (err) {
     return res
-      .status(404)
+      .status(500)
       .json({ error: err.message ? err.message : "Internal Server Error" });
   }
 });
-
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const book = await Book.findOne({ id });
