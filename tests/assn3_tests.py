@@ -23,7 +23,7 @@ def test_get_book_by_id():
 # Test 3
 def test_get_books():
     response = connectionController.http_get("books")
-    assert_status_code(response, [404])
+    assert_status_code(response, [200])
     assert_length_and_types_of_array(response, 3)
 
 # Test 4 
