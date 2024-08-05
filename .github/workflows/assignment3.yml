@@ -65,7 +65,7 @@ jobs:
       - name: check books image is loaded
         run: docker image ls
       - name: Run Docker Compose
-        run: docker-compose up -d &
+        run: docker compose up -d &
       - name: Wait for services to be healthy
         run: |
           echo "Waiting for services to be healthy..."
@@ -128,7 +128,7 @@ jobs:
           overwrite: true
       - name: Shut down Docker Compose
         if: always()
-        run: docker-compose down
+        run: docker compose down
 
   query:
     needs: test
@@ -147,7 +147,7 @@ jobs:
       - name: check books image is loaded
         run: docker image ls
       - name: Run Docker Compose
-        run: docker-compose up -d &
+        run: docker compose up -d &
       - name: Wait for services to be healthy
         run: |
           echo "Waiting for services to be healthy..."
@@ -175,4 +175,4 @@ jobs:
           name: response
           path: tests/response.txt
       - name: Shut down Docker Compose
-        run: docker-compose down
+        run: docker compose down
